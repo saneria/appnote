@@ -11,15 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notes', function (Blueprint $table) {
-            $table->id('note_id');
-            $table->string('notes');
-            $table->timestamps();
-        });
-
         Schema::table('notes', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->softDeletes(); 
         });
     }
 
@@ -28,7 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notes');
+        Schema::table('notes', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };
-

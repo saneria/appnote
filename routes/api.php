@@ -17,13 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(NotesController::class)->group(function () {
-    Route::get('/notes',             'index');
-    Route::get('/notes/{id}',        'show');
-    Route::post('/notes',            'store');
-    Route::put('/notes/{id}',        'update');
-    Route::delete('/notes/{id}',     'destroy');
-});
 
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 Route::post('/user',  [UserController::class, 'store'])->name('user.store');
@@ -40,6 +33,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/user/password/{id}',   'password')->name('user.password');
         Route::put('/user/image/{id}',      'image')->name('user.image');
         Route::delete('/user/{id}',         'destroy'); 
+    });
+    
+    Route::controller(NotesController::class)->group(function () {
+        Route::get('/notes',             'index');
+        Route::get('/notes/{id}',        'show');
+        Route::post('/notes',            'store');
+        Route::put('/notes/{id}',        'update');
+        Route::delete('/notes/{id}',     'destroy');
+        Route::put('/notes/{id}',        'restore');
     });
 
 });
