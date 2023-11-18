@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/notes',             'index');
         Route::get('/notes/{id}',        'show');
         Route::post('/notes',            'store');
-        Route::put('/notes/{id}',        'update');
+        Route::put('/notes/edit/{id}',   'update');
         Route::delete('/notes/{id}',     'destroy');
         Route::put('/notes/{id}',        'restore');
     });
