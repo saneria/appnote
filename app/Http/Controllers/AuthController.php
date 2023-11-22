@@ -20,7 +20,7 @@ class AuthController extends Controller
      
         if (! $user || ! Hash::check($request->password, $user->password)) { //guard clause technique 
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'message' => ['Not Registered.'],
             ]);
         }
 

@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\NotesRequest;
-use App\Models\Notes; 
+use App\Models\Notes;
 
 class NotesController extends Controller
 {
@@ -17,7 +13,15 @@ class NotesController extends Controller
      */
     public function index()
     {
-        return Notes::all();
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 
     /**
@@ -26,54 +30,38 @@ class NotesController extends Controller
     public function store(NotesRequest $request)
     {
         $validated = $request->validated();
-    
-        $user = auth()->user(); 
-        $validated['user_id'] = $user->id;
-
         $note = Notes::create($validated);
-    
         return $note;
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($user_id)
     {
-        try {
-            return Notes::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            Log::error("Note not found for ID: $id");
-
-            return response()->json(['error' => 'Note not found'], 404);
-        }
+        $note = Notes::where('user_id', $user_id)->get();
+        return $note;
     }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     */
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(NotesRequest $request, $id)
+    public function update(NotesRequest $request, string $id)
     {
-        try {
-            // Retrieves
-            $validated = $request->validated();
+        $validated = $request->validated();
 
-            // Find the note by ID
-            $note = Notes::findOrFail($id);
+        $note = Notes::findOrFail($id);
 
-            if ($note->user_id !== auth()->user()->id) {
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
+        $note-> update($validated);
+                    
 
-            // Update the note with the new data
-            $note->update($validated);
-
-            return $note;
-        } catch (ModelNotFoundException $e) {
-            Log::error("Note not found for ID: $id");
-
-            return response()->json(['error' => 'Note not found'], 404);
-        }
+        return $note;
     }
 
     /**
@@ -81,45 +69,23 @@ class NotesController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            $user = auth()->user();
-    
-            // Find the note with the given ID associated with the authenticated user
-            $note = $user->notes()->findOrFail($id);
-    
-            // Delete the note
-            $note->delete();
-    
-            return response()->json(['message' => 'Note deleted successfully']);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Note not found'], 404);
-        } catch (\Exception $e) {
-            Log::error('Note deletion error: ' . $e->getMessage());
-    
-            return response()->json(['error' => 'Failed to delete the note'], 500);
-        }
+        $note = Notes::findOrFail($id);
+        $note->delete();
+        return $note;
     }
 
-    /**
-     * Restore the specified soft-deleted resource.
-     */
     public function restore(string $id)
     {
-        $user = auth()->user();
+        $note = Notes::withTrashed()->find($id);
 
-        try {
-           
-            $note = $user->notes()->onlyTrashed()->findOrFail($id);
-
+        if ($note) {
             // Restores note
             $note->restore();
 
             return $note;
-        } catch (ModelNotFoundException $e) {
-
-            Log::error("Note not found for ID: $id");
-      
-            return response()->json(['error' => 'Note not found'], 404);
         }
-    }
+
+        return response()->json(['error' => 'Note not found']);
+        }   
 }
+

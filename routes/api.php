@@ -21,6 +21,14 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 Route::post('/user',  [UserController::class, 'store'])->name('user.store');
 
+Route::controller(NotesController::class)->group(function () {
+    Route::get('/notes',             'index');
+    Route::get('/notes/{id}',        'show');
+    Route::post('/notes',            'store');
+    Route::put('/notes/edit/{id}',   'update');
+    Route::delete('/notes/{id}',     'destroy');
+    Route::put('/notes/{id}',        'restore');
+});
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout',[ AuthController::class, 'logout']);
@@ -35,13 +43,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/user/{id}',         'destroy'); 
     });
     
-    Route::controller(NotesController::class)->group(function () {
-        Route::get('/notes',             'index');
-        Route::get('/notes/{id}',        'show');
-        Route::post('/notes',            'store');
-        Route::put('/notes/edit/{id}',   'update');
-        Route::delete('/notes/{id}',     'destroy');
-        Route::put('/notes/{id}',        'restore');
-    });
+
 
 });
