@@ -3,7 +3,6 @@
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,19 +29,16 @@ Route::controller(NotesController::class)->group(function () {
     Route::put('/notes/{id}',        'restore');
 });
 
+Route::controller(UserController::class)->group(function () {
+    Route::get('/user',                 'index');
+    Route::get('/user/{id}',            'show');
+    Route::put('/user/{id}',            'update')->name('user.update');
+    Route::put('/user/email/{id}',      'email')->name('user.email');
+    Route::put('/user/password/{id}',   'password')->name('us er.password');
+    Route::delete('/user/{id}',         'destroy'); 
+});
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout',[ AuthController::class, 'logout']);
-
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/user',                 'index');
-        Route::get('/user/{id}',            'show');
-        Route::put('/user/{id}',            'update')->name('user.update');
-        Route::put('/user/email/{id}',      'email')->name('user.email');
-        Route::put('/user/password/{id}',   'password')->name('user.password');
-        Route::put('/user/image/{id}',      'image')->name('user.image');
-        Route::delete('/user/{id}',         'destroy'); 
-    });
-    
-
 
 });

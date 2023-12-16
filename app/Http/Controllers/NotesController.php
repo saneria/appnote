@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\NotesRequest;
 use App\Models\Notes;
+use Illuminate\Support\Str;
 
 class NotesController extends Controller
 {
@@ -13,15 +14,7 @@ class NotesController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return Notes::all();
     }
 
     /**
@@ -30,10 +23,14 @@ class NotesController extends Controller
     public function store(NotesRequest $request)
     {
         $validated = $request->validated();
+        
+        // Update the 'notes' field with the HTML content
+        $validated['notes'] = $request->input('notes');
+    
         $note = Notes::create($validated);
         return $note;
     }
-
+    
 
     /**
      * Display the specified resource.

@@ -22,9 +22,9 @@ class NotesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'notes'      => 'required|string|max:255',
-            'user_id'    => 'required|string|max:255',
-            'notes_title'    => 'required|string|max:255'
+            'notes'         => 'required|string|max:255',
+            'user_id'       => 'string|max:255',
+            'notes_title'   => 'required|string|max:255'
 
         ];
     }
